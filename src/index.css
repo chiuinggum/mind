@@ -14,6 +14,26 @@
   padding: 0;
 }
 
+/* 去掉節點被選取/聚焦時的外框與陰影 */
+.react-flow__node,
+.react-flow__node:focus,
+.react-flow__node:focus-visible {
+  outline: none !important;
+}
+
+.react-flow__node.selected,
+.react-flow__node-default.selected,
+.react-flow__node:focus,
+.react-flow__node-default:focus {
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* 把連接把手的陰影也關掉（避免四角有微光暈） */
+.react-flow__handle {
+  box-shadow: none !important;
+}
+
 /* —— Markdown 表格與程式碼不要溢出卡片 —— */
 .prose table {
   table-layout: fixed;

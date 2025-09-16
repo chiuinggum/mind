@@ -526,6 +526,7 @@ export default function BoardPage({ boardId }: { boardId: string }) {
             );
           }}
           fitView
+          elementsSelectable={false}
         >
           <Background />
           <MiniMap pannable zoomable />

@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
+import ReactFlow, {
+  Background,
+  Controls,
+  MiniMap,
+  MarkerType,
+  Position,
+} from "reactflow";
 import "reactflow/dist/style.css";
 import { db, uid } from "../lib/db";
 import type { NodeRow } from "../lib/models";
@@ -86,6 +92,8 @@ export default function BoardPage({ boardId }: { boardId: string }) {
         position: { x: n.x, y: n.y },
         data: n,
         type: "default",
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
       })),
     [nodes]
   );
@@ -96,8 +104,16 @@ export default function BoardPage({ boardId }: { boardId: string }) {
         .filter((n) => n.parentId)
         .map((n) => ({
           id: `${n.parentId}->${n.id}`,
-          source: String(n.parentId),
+          source: n.parentId!,
           target: n.id,
+          type: "straight",
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 16,
+            height: 16,
+            color: "#94a3b8",
+          },
+          style: { stroke: "#94a3b8", strokeWidth: 2 },
         })),
     [nodes]
   );
@@ -298,6 +314,24 @@ export default function BoardPage({ boardId }: { boardId: string }) {
             ),
           }}
           onNodesChange={onNodesChange}
+          onNodeDrag={(_, node) => {
+            setNodes((prev) =>
+              prev.map((n) =>
+                n.id === node.id
+                  ? { ...n, x: node.position.x, y: node.position.y }
+                  : n
+              )
+            );
+          }}
+          onNodeDragStop={(_, node) => {
+            setNodes((prev) =>
+              prev.map((n) =>
+                n.id === node.id
+                  ? { ...n, x: node.position.x, y: node.position.y }
+                  : n
+              )
+            );
+          }}
           fitView
         >
           <Background />

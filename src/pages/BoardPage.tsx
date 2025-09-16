@@ -157,10 +157,17 @@ function NodeCard({
 
       {/* Scrollable content */}
       <div
-        className="px-4 flex-1 overflow-auto nowheel nodrag"
-        onWheelCapture={(e) => e.stopPropagation()} // 滾輪只給容器
-        onMouseDownCapture={(e) => e.stopPropagation()} // 避免被當作拖動畫布
-        style={{ overscrollBehavior: "contain" }}
+        className="px-4 flex-1 overflow-auto nowheel content-selectable select-text cursor-text"
+        onWheelCapture={(e) => e.stopPropagation()}
+        onMouseDownCapture={(e) => e.stopPropagation()}
+        style={{
+          overscrollBehavior: "contain",
+          userSelect: "text",
+          WebkitUserSelect: "text",
+          MozUserSelect: "text",
+          msUserSelect: "text",
+          cursor: "text",
+        }}
       >
         <div className="mt-3 text-xs uppercase tracking-wide text-slate-500 flex items-center gap-2">
           ANSWER{" "}
@@ -229,7 +236,8 @@ function NodeCard({
       {/* 底部拖曳手把（高度調整）；也可以放右下角 */}
       <div
         onMouseDown={onDragStart}
-        className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize nodrag nowheel nopan"
+        className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize nowheel nopan z-10"
+        style={{ touchAction: "none" }} // 手機/觸控更穩
         title="Drag to resize height"
       />
     </div>

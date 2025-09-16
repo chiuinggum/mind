@@ -6,7 +6,6 @@ import ReactFlow, {
   MarkerType,
   Position,
 } from "reactflow";
-import "reactflow/dist/style.css";
 import { db, uid } from "../lib/db";
 import type { NodeRow } from "../lib/models";
 import { useSettingsStore } from "../store/useSettingsStore";

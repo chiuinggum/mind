@@ -10,6 +10,9 @@ import "reactflow/dist/style.css";
 import { db, uid } from "../lib/db";
 import type { NodeRow } from "../lib/models";
 import { useSettingsStore } from "../store/useSettingsStore";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 // --- askOpenAI 與 NodeCard（與你現有版本一致，略）
 async function askOpenAI(opts: {
@@ -41,22 +44,90 @@ function NodeCard({
   onAddChild: (parentId: string) => void;
 }) {
   return (
-    <div className="rounded-2xl shadow-lg bg-white p-3 w-[320px] border border-slate-200">
+    <div className="rounded-2xl bg-white border border-slate-200 shadow-md p-4 min-w-[320px] max-w-[560px]">
       <div className="text-xs uppercase tracking-wide text-slate-500">
-        Question
+        QUESTION
       </div>
-      <div className="font-medium whitespace-pre-wrap break-words">
-        {n.question}
+      {/* 問題（Markdown） */}
+      <div className="prose prose-slate prose-sm max-w-none leading-relaxed">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={{
+            h1: (p) => <h3 className="text-base font-semibold" {...p} />,
+            h2: (p) => <h4 className="text-sm font-semibold" {...p} />,
+            h3: (p) => <h5 className="text-sm font-semibold" {...p} />,
+            table: (p) => <table className="text-xs border-collapse" {...p} />,
+            th: (p) => <th className="border px-2 py-1" {...p} />,
+            td: (p) => <td className="border px-2 py-1 align-top" {...p} />,
+
+            /* 用 pre 控制區塊程式碼，避免溢出；code(block) 只負責字體大小 */
+            pre: (p) => <pre className="overflow-x-auto max-w-full" {...p} />,
+
+            code: (p) =>
+              // @ts-expect-error: ReactMarkdown does not type 'inline', but it's present at runtime
+              p.inline ? (
+                <code className="px-1 py-0.5 rounded bg-slate-100" {...p} />
+              ) : (
+                <code className="text-xs" {...p} />
+              ),
+
+            ul: (p) => <ul className="list-disc ml-5" {...p} />,
+            ol: (p) => <ol className="list-decimal ml-5" {...p} />,
+          }}
+        >
+          {n.question}
+        </ReactMarkdown>
       </div>
+
       <div className="mt-3 text-xs uppercase tracking-wide text-slate-500 flex items-center gap-2">
-        Answer{" "}
+        ANSWER{" "}
         {n.loading ? (
           <span className="animate-pulse text-slate-400">(loading)</span>
         ) : null}
       </div>
-      <div className="whitespace-pre-wrap break-words text-slate-800">
-        {n.answer ?? (n.loading ? "" : "—")}
+
+      {/* 回答（Markdown） */}
+      <div className="break-words text-slate-800">
+        {n.loading ? null : n.answer ? (
+          <div className="prose prose-slate prose-sm max-w-none leading-relaxed">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={{
+                h1: (p) => <h3 className="text-base font-semibold" {...p} />,
+                h2: (p) => <h4 className="text-sm font-semibold" {...p} />,
+                h3: (p) => <h5 className="text-sm font-semibold" {...p} />,
+                table: (p) => (
+                  <table className="text-xs border-collapse" {...p} />
+                ),
+                th: (p) => <th className="border px-2 py-1" {...p} />,
+                td: (p) => <td className="border px-2 py-1 align-top" {...p} />,
+
+                /* 用 pre 控制區塊程式碼，避免溢出；code(block) 只負責字體大小 */
+                pre: (p) => (
+                  <pre className="overflow-x-auto max-w-full" {...p} />
+                ),
+                code: (p) =>
+                  // @ts-expect-error: ReactMarkdown does not type 'inline', but it's present at runtime
+                  p.inline ? (
+                    <code className="px-1 py-0.5 rounded bg-slate-100" {...p} />
+                  ) : (
+                    <code className="text-xs" {...p} />
+                  ),
+
+                ul: (p) => <ul className="list-disc ml-5" {...p} />,
+                ol: (p) => <ol className="list-decimal ml-5" {...p} />,
+              }}
+            >
+              {n.answer}
+            </ReactMarkdown>
+          </div>
+        ) : (
+          "—"
+        )}
       </div>
+
       <div className="mt-3 flex justify-end gap-2">
         <button
           className="px-3 py-1 rounded-xl border border-slate-300 hover:bg-slate-50"

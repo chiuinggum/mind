@@ -1,1 +1,37 @@
 @import "tailwindcss";
+@import "highlight.js/styles/github.css";
+
+@plugin "@tailwindcss/typography";
+
+.react-flow__node,
+.react-flow__node-default {
+  text-align: left;
+}
+.react-flow__node-default {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* —— Markdown 表格與程式碼不要溢出卡片 —— */
+.prose table {
+  table-layout: fixed;
+  width: 100%;
+}
+.prose th,
+.prose td {
+  word-wrap: break-word;
+}
+
+.prose pre {
+  max-width: 100%;
+  overflow-x: auto; /* 橫向捲動 */
+  white-space: pre; /* 保留縮排 */
+  border-radius: 0.5rem;
+  background: #f1f5f9; /* slate-100 */
+  padding: 0.5rem;
+}
+.prose code {
+  word-break: break-word;
+}

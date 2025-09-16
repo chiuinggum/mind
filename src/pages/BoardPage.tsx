@@ -5,6 +5,7 @@ import ReactFlow, {
   MiniMap,
   MarkerType,
   Position,
+  Handle,
 } from "reactflow";
 import { db, uid } from "../lib/db";
 import type { NodeRow } from "../lib/models";
@@ -43,7 +44,33 @@ function NodeCard({
   onAddChild: (parentId: string) => void;
 }) {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 shadow-md p-4 min-w-[320px] max-w-[560px]">
+    <div className="relative rounded-2xl bg-white border border-slate-200 shadow-md p-4 min-w-[320px] max-w-[560px]">
+      {/* 左側 target handle（進邊） */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        style={{
+          left: -8, // 把把手稍微推出卡片外
+          width: 10,
+          height: 10,
+          background: "transparent",
+          border: "none",
+        }}
+      />
+      {/* 右側 source handle（出邊） */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        style={{
+          right: -8,
+          width: 10,
+          height: 10,
+          background: "transparent",
+          border: "none",
+        }}
+      />
       <div className="text-xs uppercase tracking-wide text-slate-500">
         QUESTION
       </div>

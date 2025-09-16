@@ -8,12 +8,13 @@ export type Board = {
 export type NodeRow = {
   id: string;
   boardId: string;
-  parentId?: string | null;
+  parentId: string | null;
   question: string;
   answer?: string;
   loading?: boolean;
   x: number;
   y: number;
+  h?: number;
   createdAt: string;
   updatedAt: string;
 };
